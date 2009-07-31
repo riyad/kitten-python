@@ -3,11 +3,10 @@
 
 import sys
 
+from Kitten.mainwindow import MainWindow
+
 from PyKDE4.kdecore import *
 from PyKDE4.kdeui import *
-
-class MainWindow(KMainWindow):
-  pass
 
 appName = "kitten"
 catalog = ""
