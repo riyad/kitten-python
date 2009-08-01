@@ -8,9 +8,9 @@ class GitHistoryModel(QAbstractTableModel):
   columns = ('Summary', 'Author', 'Date', 'Id')
   column_mapping = {'Summary': 'summary', 'Author': 'author', 'Date': 'authored_date', 'Id': 'id_abbrev'}
 
-  def __init__(self, repo_path = "", branch = "master", parent = None):
+  def __init__(self, repository, branch = 'master', parent = None):
     QAbstractTableModel.__init__ (self, parent)
-    self.repository = Repo(repo_path)
+    self.repository = repository
     self.branch = branch
     self.reset()
 
