@@ -20,11 +20,14 @@ class GitHistoryModel(QAbstractTableModel):
   def columnName(self, column):
     return self.columns[column]
 
+  def commit(self, row):
+    return self.commits[row]
+
   def data(self, index, role = Qt.DisplayRole):
     if not index.isValid() or role != Qt.DisplayRole:
       return QVariant()
     else:
-      return QVariant(getattr(self.commits[index.row()], self.column_mapping[self.columnName(index.column())]))
+      return QVariant(getattr(self.commit(index.row()), self.column_mapping[self.columnName(index.column())]))
 
   def headerData(self, section, orientation, role = Qt.DisplayRole):
     if orientation != Qt.Horizontal or role != Qt.DisplayRole:
