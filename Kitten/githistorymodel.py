@@ -11,7 +11,9 @@ class GitHistoryModel(QAbstractTableModel):
   def __init__(self, repository, branch = 'master', parent = None):
     QAbstractTableModel.__init__ (self, parent)
     self.repository = repository
+    self.commits = {}
     self.branch = branch
+    self.loadCommits(branch)
     self.reset()
 
   def columnCount(self, parent = QModelIndex()):
@@ -21,7 +23,7 @@ class GitHistoryModel(QAbstractTableModel):
     return self.columns[column]
 
   def commit(self, row):
-    return self.commits[row]
+    return self.commits[self.branch][row]
 
   def data(self, index, role = Qt.DisplayRole):
     if not index.isValid() or role != Qt.DisplayRole:
@@ -35,9 +37,20 @@ class GitHistoryModel(QAbstractTableModel):
     else:
       return QVariant(self.columnName(section))
 
+  def loadCommits(self, branch):
+    if not branch in self.commits.keys():
+      self.commits[branch] = Commit.find_all(self.repository, branch)
+
   def reset(self):
-    self.commits = self.repository.commits(start = self.branch, max_count = self.rowCount())
+    self.commits = {}
+    self.loadCommits(self.branch)
     QAbstractTableModel.reset(self)
 
   def rowCount(self, parent = QModelIndex()):
-    return self.repository.commit_count(self.branch)
+    return len(self.commits[self.branch])
+
+  def setBranch(self, branch):
+    if self.branch != branch:
+      self.loadCommits(branch)
+      self.branch = branch
+      #QAbstractTableModel.reset(self)
