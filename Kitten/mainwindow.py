@@ -29,7 +29,7 @@ class MainWindow(KMainWindow):
     self.ui.branchComboBox.setModel(headsModel)
     self.connect(self.ui.branchComboBox, SIGNAL("currentIndexChanged(const QString&)"), self.branchChanged)
 
-    historyModel = GitHistoryModel(self.repository, self.branch, self.ui.historyTableView)
+    historyModel = GitHistoryModel(self.repository, self.ui.historyTableView)
     self.ui.historyTableView.setModel(historyModel)
 
   def openRepository(self):
@@ -44,14 +44,13 @@ class MainWindow(KMainWindow):
     self.reloadRepository()
 
   def reloadRepository(self):
-    #self.ui.branchComboBox.model().reset()
+    self.ui.historyTableView.model().reset()
+
+    self.ui.branchComboBox.model().reset()
     currentBranchIndex = self.ui.branchComboBox.findText(self.branch)
     self.ui.branchComboBox.setCurrentIndex(currentBranchIndex)
 
-    self.ui.historyTableView.model().reset()
-
   def branchChanged(self, currentBranch):
     self.branch = currentBranch
-    print "Switched to branch: %s" % currentBranch
-
+    print "Switched to branch:", currentBranch
     self.ui.historyTableView.model().setBranch(currentBranch)
