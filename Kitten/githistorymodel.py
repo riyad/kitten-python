@@ -4,6 +4,8 @@ from PyQt4.QtCore import *
 
 from git import *
 
+import time
+
 class GitHistoryModel(QAbstractTableModel):
   columns = ('Summary', 'Author', 'Date', 'Id')
   column_mapping = {'Summary': 'summary', 'Author': 'author', 'Date': 'authored_date', 'Id': 'id_abbrev'}
@@ -24,7 +26,12 @@ class GitHistoryModel(QAbstractTableModel):
     if not index.isValid() or role != Qt.DisplayRole:
       return QVariant()
     else:
-      return QVariant(getattr(self.commits[index.row()], self.column_mapping[self.columnName(index.column())]))
+      data = getattr(self.commits[index.row()], self.column_mapping[self.columnName(index.column())])
+      if isinstance(data, time.struct_time):
+        data = time.strftime("%c", data)
+      else:
+        data = str(data)
+      return QVariant(data)
 
   def headerData(self, section, orientation, role = Qt.DisplayRole):
     if orientation != Qt.Horizontal or role != Qt.DisplayRole:
